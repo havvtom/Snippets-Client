@@ -42,7 +42,7 @@
 					<template v-if="$auth.loggedIn">
 						<li>
 							<nuxt-link
-								:to="{ name: 'index' }"
+								:to="{ name: 'dashboard' }"
 								class="text-gray-700 text-lg lg:py-8 lg:px-4"
 							>
 								Dashboard

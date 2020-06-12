@@ -8,6 +8,7 @@
 						class="font-header w-full block p-2 border-2 rounded text-4xl text-gray-700 font-medium leading-tight mb-4 border-gray-400" 
 						value=""
 						placeholder="Untitled Snippet" 
+						v-model="snippet.title"
 					/>
 					<div class="text-gray-600">
 						Created by
@@ -21,6 +22,9 @@
 			</div>
 		</div>
 		<div class="container">
+			{{ steps }}
+			<hr>
+			{{ currentStep }}
 			<div class="flex items-center mb-6">
 				<div class="text-xl text-gray-600 font-medium mr-3">
 					1/1. 
@@ -30,6 +34,7 @@
 					value="" 
 					class="text-xl text-gray-600 border-gray-400 font-medium py-1 bg-transparent px-2 border-2 rounded w-full"
 					placeholder="Untitled Step" 
+					v-model="currentStep.title"
 				>
 			</div>
 			
@@ -56,7 +61,10 @@
 						</nuxt-link>
 					</div>
 					<div class="w-full">
-						<textarea class="w-full mb-6 border-2 border-gray-400 rounded">
+						<textarea 
+							class="w-full mb-6 border-2 border-gray-400 rounded"
+							v-model="currentStep.body"
+						>
 						</textarea>
 						<div class="bg-white p-8 rounded-lg text-gray-600 ">
 							Markdown Content
@@ -101,16 +109,16 @@
 						<ul>
 							<li 
 								class="mb-1" 
-								v-for="(step, index) in 5" 
+								v-for="(step, index) in orderedStepsAsc" 
 								:key="index"
 							>
 								<nuxt-link
 									:to="{}"
 									:class="{
-										'font-bold': index === 0
+										'font-bold': currentStep.uuid === step.uuid
 									}"
 								>
-									{{ index+1 }}. Step Title
+									{{ index+1 }}. {{step.title}}
 								</nuxt-link>
 							</li>
 						</ul>
@@ -124,7 +132,37 @@
 	</div>
 </template>
 <script type="text/javascript">
+import { orderBy as _orderBy } from 'lodash'
 export default {
+	data () {
+		return {
+			snippet: null,
+			steps: []
+		}
+	},
+	computed: {
+		orderedStepsAsc () {
+			return _orderBy (
+				this.steps, 'order', 'asc'
+				)
+		},
+		firstStep () {
+			return this.orderedStepsAsc[0]
+		},
+		currentStep () {
+			return this.orderedStepsAsc.find(
+				(s) => s.uuid === this.$route.query.step
+				) || this.firstStep
+		}
+	},
+	async asyncData ({ app, params }) {
+		let snippet = await app.$axios.$get(`snippets/${params.id}`)
+
+		return {
+			snippet: snippet.data,
+			steps: snippet.data.steps.data
+		}
+	}
 
 }
 </script>
