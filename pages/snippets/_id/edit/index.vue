@@ -22,9 +22,6 @@
 			</div>
 		</div>
 		<div class="container">
-			{{ steps }}
-			<hr>
-			{{ currentStep }}
 			<div class="flex items-center mb-6">
 				<div class="text-xl text-gray-600 font-medium mr-3">
 					1/1. 
@@ -118,7 +115,7 @@
 										'font-bold': currentStep.uuid === step.uuid
 									}"
 								>
-									{{ index+1 }}. {{step.title}}
+									{{ index+1 }}. {{step.title || 'Untitled step'}}
 								</nuxt-link>
 							</li>
 						</ul>
@@ -133,11 +130,34 @@
 </template>
 <script type="text/javascript">
 import { orderBy as _orderBy } from 'lodash'
+import { debounce as _debounce } from 'lodash'
 export default {
 	data () {
 		return {
 			snippet: null,
 			steps: []
+		}
+	},
+	head () {
+		return {
+			title: `Editing ${this.snippet.title || 'Untitled Snippet'}`
+		}
+	},
+	watch: {
+		'snippet.title': {
+			handler: _debounce( async function (title) {
+				await this.$axios.$patch(`/snippets/${this.snippet.uuid}`, {title})
+			}, 500)
+		},
+		currentStep: {
+			deep: true,
+
+			handler: _debounce( async function (step) {
+				await this.$axios.$patch(`/snippets/${this.snippet.uuid}/steps/${step.uuid}`, {
+					title: step.title, 
+					body: step.body
+				})
+			}, 500)
 		}
 	},
 	computed: {
