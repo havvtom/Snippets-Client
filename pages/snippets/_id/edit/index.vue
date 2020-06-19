@@ -23,13 +23,13 @@
 		</div>
 		<div class="container">
 			<div class="flex items-center mb-6">
-				<div class="text-xl text-gray-600 font-medium mr-3">
-					1/1. 
+				<div class="text-xl text-gray-600 font-header font-medium mr-3">
+					{{ currentStepIndex + 1 }}/{{ steps.length }}. 
 				</div>
 				<input 
 					type="text"  
 					value="" 
-					class="text-xl text-gray-600 border-gray-400 font-medium py-1 bg-transparent px-2 border-2 rounded w-full"
+					class="text-xl text-gray-600 border-gray-400 font-header font-medium py-1 bg-transparent px-2 border-2 rounded w-full"
 					placeholder="Untitled Step" 
 					v-model="currentStep.title"
 				>
@@ -38,24 +38,21 @@
 			<div class="flex flex-wrap lg:flex-no-wrap">
 				<div class="flex flex-wrap lg:flex-no-wrap justify-between items-start w-full lg:w-8/12 lg:mr-16 mb-8">
 					<div class="flex flex-row lg:flex-col order-first">
-						<nuxt-link
-							:to="{}"
-							class="block mb-2 p-3 bg-blue-500 rounded-lg mr-2"
-							title="Previous Step"
+						<step-navigation-button
+							:step="previousStep"
+							class="mr-2"
 						>
 							<svg viewBox="0 0 20 20" class="text-white h-6 w-6" fill="currentColor">
 								<path fill-rule="evenodd" d="M9.707 16.707a1 1 0 01-1.414 0l-6-6a1 1 0 010-1.414l6-6a1 1 0 011.414 1.414L5.414 9H17a1 1 0 110 2H5.414l4.293 4.293a1 1 0 010 1.414z" clip-rule="evenodd"/>
 							</svg>
-						</nuxt-link>
-						<nuxt-link
-							:to="{}"
-							class="block mb-2 p-3 bg-blue-500 rounded-lg mr-2"
-							title="Add Step Before"
-						>
-							<svg viewBox="0 0 20 20" class="text-white h-6 w-6" fill="currentColor">
-								<path fill-rule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clip-rule="evenodd"/>
-							</svg>
-						</nuxt-link>
+						</step-navigation-button>
+						<add-step-button
+							class="mr-2"
+							position="before"
+							:snippet="snippet"
+							:currentStep="currentStep"
+							@added="handleStepAdded"
+						/>
 					</div>
 					<div class="w-full">
 						<textarea 
@@ -69,33 +66,27 @@
 					</div>
 					
 					<div class="flex lg:flex-col flex-row order-first lg:order-last">
-						<nuxt-link
-							:to="{}"
-							class="block mb-2 p-3 bg-blue-500 rounded-lg ml-2 order-last lg:order-first"
-							title="Next Step"
+						<step-navigation-button
+							:step="nextStep"
+							class="ml-2"
 						>
 							<svg viewBox="0 0 20 20" class="text-white h-6 w-6" fill="currentColor">
 								<path fill-rule="evenodd" d="M12.293 5.293a1 1 0 011.414 0l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-2.293-2.293a1 1 0 010-1.414z" clip-rule="evenodd"/>
 							</svg>
-						</nuxt-link>
-						<nuxt-link
-							:to="{}"
-							class="block mb-2 p-3 bg-blue-500 rounded-lg ml-2"
-							title="Add Step After"
-						>
-							<svg viewBox="0 0 20 20" class="text-white h-6 w-6" fill="currentColor">
-								<path fill-rule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clip-rule="evenodd"/>
-							</svg>
-						</nuxt-link>
-						<nuxt-link
-							:to="{}"
-							class="block mb-2 p-3 bg-blue-500 order-first lg:order-last rounded-lg ml-2"
-							title="Delete Step"
-						>
-							<svg viewBox="0 0 20 20" class="text-white h-6 w-6" fill="currentColor">
-							  <path fill-rule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clip-rule="evenodd"/>
-							</svg>
-						</nuxt-link>
+						</step-navigation-button>
+						<add-step-button
+							class="ml-2"
+							position="after"
+							:snippet="snippet"
+							:currentStep="currentStep"
+							@added="handleStepAdded"
+						/>
+						<delete-step-button
+							:snippet="snippet"
+							:step="currentStep"
+							v-if="steps.length > 1"
+							@deleted="handleStepDeleted"
+						/>
 					</div>
 				</div>
 				<div class="w-full lg:w-4/12">
@@ -103,22 +94,40 @@
 						<h1 class="text-xl text-gray-600 font-medium mb-6">
 							Steps
 						</h1>
-						<ul>
-							<li 
-								class="mb-1" 
-								v-for="(step, index) in orderedStepsAsc" 
-								:key="index"
+						<step-list
+							:steps="orderedStepsAsc"
+							:currentStep="currentStep"
+						/>
+					</div>
+					<div class="border-t-2 border-gray-300 py-6">
+						<h1 class="text-xl text-gray-600 font-medium mb-6">
+							Publishing
+						</h1>
+						<div class="text-gray-500 text-sm mb-6">
+							<template v-if="lastSaved">
+								Last saved at {{lastSavedFormatted}}
+							</template>
+							<template v-else>
+								No changes saved in this session yet
+							</template>
+						</div>
+						<div class="flex items-baseline">
+							<input 
+								type="checkbox" 
+								name="public" 
+								id="public" 
+								class="mr-2"
+								v-model="snippet.is_public"
 							>
-								<nuxt-link
-									:to="{}"
-									:class="{
-										'font-bold': currentStep.uuid === step.uuid
-									}"
-								>
-									{{ index+1 }}. {{step.title || 'Untitled step'}}
-								</nuxt-link>
-							</li>
-						</ul>
+							<div>
+								<label for="public" class="text-gray-600 font-medium">
+									Make this snippet public
+								</label>
+								<div class="text-gray-500 text-sm">
+									Don't worry you can change this later
+								</div>
+							</div>
+						</div>
 					</div>
 					<div class="text-gray-500 text-sm">
 						Use <div class="text-gray-600 leading-relaxed inline-block bg-gray-400 rounded-lg text-sm px-2">ctrl</div> + <div class="text-gray-600 leading-relaxed inline-block bg-gray-400 rounded-lg text-sm px-2">shift</div> + <div class="text-gray-600 leading-relaxed inline-block bg-gray-400 rounded-lg text-sm px-2">left or right</div> to navigate between steps
@@ -129,13 +138,27 @@
 	</div>
 </template>
 <script type="text/javascript">
-import { orderBy as _orderBy } from 'lodash'
+
 import { debounce as _debounce } from 'lodash'
+import StepList from '../components/StepList'
+import StepNavigationButton from '../components/StepNavigationButton'
+import AddStepButton from './components/AddStepButton'
+import DeleteStepButton from './components/DeleteStepButton'
+import browseSnippet from '@/mixins/snippets/browseSnippet'
+import moment from 'moment'
+
 export default {
+	components:{
+		StepList,
+		AddStepButton,
+		StepNavigationButton,
+		DeleteStepButton
+	},
 	data () {
 		return {
 			snippet: null,
-			steps: []
+			steps: [],
+			lastSaved: null
 		}
 	},
 	head () {
@@ -147,6 +170,16 @@ export default {
 		'snippet.title': {
 			handler: _debounce( async function (title) {
 				await this.$axios.$patch(`/snippets/${this.snippet.uuid}`, {title})
+
+				this.touchLastSaved()
+			}, 500)
+		},
+		'snippet.is_public': {
+			handler: _debounce( async function (isPublic) {
+				await this.$axios.$patch(`/snippets/${this.snippet.uuid}`, {
+					is_public: isPublic})
+
+				this.touchLastSaved()
 			}, 500)
 		},
 		currentStep: {
@@ -157,22 +190,36 @@ export default {
 					title: step.title, 
 					body: step.body
 				})
+
+				this.touchLastSaved()
 			}, 500)
 		}
 	},
+	mixins: [
+		browseSnippet
+	],
 	computed: {
-		orderedStepsAsc () {
-			return _orderBy (
-				this.steps, 'order', 'asc'
-				)
+		lastSavedFormatted () {
+			return moment(this.lastSaved).format("YYYY-MM-DD HH:mm:ss")
+		}
+	},
+	methods: {
+		touchLastSaved () {
+			this.lastSaved = moment.now()
 		},
-		firstStep () {
-			return this.orderedStepsAsc[0]
+		handleStepAdded (step) {
+			this.steps.push(step)
+			this.goToStep(step)
 		},
-		currentStep () {
-			return this.orderedStepsAsc.find(
-				(s) => s.uuid === this.$route.query.step
-				) || this.firstStep
+		handleStepDeleted (step) {
+
+			let previousStep = this.previousStep
+
+			this.steps = this.steps.filter( (s) => {
+				return s.uuid != step.uuid
+			})
+
+			this.goToStep(previousStep || this.firstStep)
 		}
 	},
 	async asyncData ({ app, params }) {
