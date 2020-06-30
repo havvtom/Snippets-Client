@@ -15,7 +15,10 @@ export default {
     link: [
       { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' },
       { rel: 'stylesheet', href: 'https://fonts.googleapis.com/css2?family=Rubik:wght@400;500&display=swap' } 
-    ]
+    ],
+    script:[
+      { src: "https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.2/MathJax.js?config=TeX-AMS_HTML"}
+    ],
   },
   /*
   ** Customize the progress-bar color
@@ -31,6 +34,9 @@ export default {
   ** Plugins to load before mounting the App
   */
   plugins: [
+    { src: '@/plugins/vue-mathjax',
+      mode: 'client'
+    }
   ],
   /*
   ** Nuxt.js dev-modules
@@ -87,6 +93,12 @@ export default {
     ** You can extend webpack config here
     */
     extend (config, ctx) {
-    }
+    },
+
+    transpile: [
+      'MathJax', 
+      'vue-instantsearch', 
+      'instantsearch.js/es'
+    ]
   }
 }

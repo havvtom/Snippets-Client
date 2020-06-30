@@ -54,16 +54,9 @@
 							@added="handleStepAdded"
 						/>
 					</div>
-					<div class="w-full">
-						<textarea 
-							class="w-full mb-6 border-2 border-gray-400 rounded"
-							v-model="currentStep.body"
-						>
-						</textarea>
-						<div class="bg-white p-8 rounded-lg text-gray-600 ">
-							Markdown Content
-						</div>
-					</div>
+					<step-editor
+						:step="currentStep"
+					/>
 					
 					<div class="flex lg:flex-col flex-row order-first lg:order-last">
 						<step-navigation-button
@@ -141,6 +134,7 @@
 
 import { debounce as _debounce } from 'lodash'
 import StepList from '../components/StepList'
+import StepEditor from '../components/StepEditor'
 import StepNavigationButton from '../components/StepNavigationButton'
 import AddStepButton from './components/AddStepButton'
 import DeleteStepButton from './components/DeleteStepButton'
@@ -151,6 +145,7 @@ export default {
 	components:{
 		StepList,
 		AddStepButton,
+		StepEditor,
 		StepNavigationButton,
 		DeleteStepButton
 	},

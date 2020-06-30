@@ -3,7 +3,7 @@
 		<div class="bg-white mb-16">
 			<div class="container py-10 pb-16">
 				<div class="w-10/12">
-					<h1 class="text-4xl text-gray-700 font-medium leading-tight mb-4">{{ snippet.title }}</h1>
+					<h1 class="text-4xl text-gray-700 font-medium leading-tight mb-4">{{ snippet.title || "Untitled Snippet" }}</h1>
 					<div class="text-gray-600">
 						Created by
 						<nuxt-link
@@ -32,7 +32,9 @@
 						</step-navigation-button>
 					</div>
 					<div class="bg-white p-8 rounded-lg text-gray-600 w-full">
-						{{ currentStep.body }}
+						<step-show
+							:currentStep="currentStep.body"
+						/>
 					</div>
 					<div class="flex lg:flex-col flex-row order-first lg:order-last">
 						<step-navigation-button
@@ -87,6 +89,7 @@
 import StepList from './components/StepList'
 import StepNavigationButton from './components/StepNavigationButton'
 import browseSnippet from '@/mixins/snippets/browseSnippet'
+import StepShow from '@/components/snippets/StepShow'
 
 export default {
 	data () {
@@ -105,7 +108,8 @@ export default {
 	},
 	components:{
 		StepList,
-		StepNavigationButton
+		StepNavigationButton,
+		StepShow
 	},
 	async asyncData ({ app, params }) {
 			let snippet = await app.$axios.$get(`snippets/${params.id}`)

@@ -23,7 +23,7 @@
 				<ul class="lg:flex items-center lg:h-24 w-full lg:w-auto">
 					<li>
 						<nuxt-link
-							:to="{ name: 'index' }"
+							:to="{ name: 'browse' }"
 							class="text-gray-700 text-lg lg:py-8 lg:px-4"
 						>
 							Browse
@@ -31,7 +31,7 @@
 					</li>
 					<li>
 						<nuxt-link
-							:to="{ name: 'index' }"
+							:to="{ name: 'search' }"
 							class="text-gray-700 text-lg lg:py-8 lg:px-4"
 						>
 							Search
