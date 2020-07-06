@@ -50,7 +50,7 @@
 						</li>
 						<li>
 							<nuxt-link
-								:to="{ name: 'index' }"
+								:to="{ name: 'account' }"
 								class="text-gray-700 text-lg lg:py-8 lg:px-4"							
 							>
 								{{ $auth.user.name }}
@@ -77,7 +77,7 @@
 						</li>
 						<li>
 							<nuxt-link
-								:to="{ name: 'index' }"
+								:to="{ name: 'auth-signup' }"
 								class="text-gray-700 text-lg lg:py-8 lg:px-4"
 							>
 								Create an Account

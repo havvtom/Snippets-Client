@@ -69,7 +69,7 @@ import algoliasearch from 'algoliasearch/lite';
 
 const searchClient = algoliasearch(
   '3LEB06DEL9',
-  'YzhmMTY0MGUzODQ2MDc4Y2Q0NTg0ZDZkY2EzMGEwNDU2ODJmMThlYTgzNjMzMWNmZmM1NjQwNDEyZTMyOWI3N2ZpbHRlcnM9aXNfcHVibGljJTNBdHJ1ZQ=='
+  '7e6ce3fc36d1d1f0639c3cc169e8be2b'
 );
 
 export default {
@@ -93,6 +93,7 @@ export default {
     this.results = window.__NUXT__.algoliaState;
 
     this.instantsearch.hydrate(this.results);
+
   },
   components: {
     AisInstantSearchSsr,
@@ -107,6 +108,10 @@ export default {
     AisPagination,
     SearchSnippetCard,
     AisPoweredBy
+  },
+  async asyncData({ app }) {
+    // let key = await app.$axios.get('keys/algolia')
+    //I intend to use this key in the searchClient public key
   },
   mounted () {
    

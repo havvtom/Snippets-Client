@@ -13,7 +13,12 @@
 					<div class="text-gray-600">
 						Created by
 						<nuxt-link
-							:to="{}"
+							:to="{
+								name: 'author-id',
+								params: {
+									id: snippet.author.data.username
+								}
+							}"
 						>
 							Tom Havv
 						</nuxt-link>
@@ -156,6 +161,7 @@ export default {
 			lastSaved: null
 		}
 	},
+	middleware: ['auth'],
 	head () {
 		return {
 			title: `Editing ${this.snippet.title || 'Untitled Snippet'}`

@@ -26,14 +26,14 @@
     },
     data () {
       return {
-        formula: '$$x = {-b \\pm \\sqrt{b^2-4ac} \\over 2a}.$$'
+        
       }
     },
     components: {
       StepShow,
     },
     mounted () {
-      console.log(this.step)
+      // console.log(this.step)
     }
   }
 </script>

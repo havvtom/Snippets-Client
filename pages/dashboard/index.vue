@@ -2,7 +2,7 @@
 	<div class="container mt-16">
 		<div class="flex justify-between">
 			<h1 class="text-xl font-medium text-gray-600 mb-6">
-				Your snippets (x)
+				Your snippets ({{snippets.length}})
 			</h1>
 			<a href="#" @click.prevent="createSnippet">+ Create a Snippet</a>
 		</div>	
@@ -25,6 +25,7 @@ export default {
 			snippets: []
 		}
 	},
+	middleware: ['auth'],
 	head () {
 	  return {
 	    title: 'Dashboard',

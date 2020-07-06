@@ -2,6 +2,7 @@ let env = require ('dotenv').config()
 
 export default {
   mode: 'universal',
+  env: env.parsed,
   /*
   ** Headers of the page
   */
@@ -34,6 +35,7 @@ export default {
   ** Plugins to load before mounting the App
   */
   plugins: [
+    '@/plugins/algolia',
     { src: '@/plugins/vue-mathjax',
       mode: 'client'
     }
@@ -59,6 +61,9 @@ export default {
     baseUrl: env.parsed.API_URL
   },
   auth: {
+    redirect: {
+      login: '/auth/signin'
+    },
     strategies: {
       local: {
         endpoints: {
