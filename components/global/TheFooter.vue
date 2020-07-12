@@ -23,7 +23,7 @@
 						target="_blank" 
 						rel="noopener"
 					>
-						havvtom.co.za
+						tom@mathsnippets.co.za
 					</a>
 				</li>
 				<li class="mr-8 w-full lg:w-auto">
